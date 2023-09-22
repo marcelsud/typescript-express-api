@@ -1,14 +1,13 @@
 import { http } from "@ampt/sdk";
-import { attachControllers } from "@decorators/express";
-import * as express from "express";
-import { Router } from "express";
-import { UsersController } from "./src/demo.controller";
+import { bootstrap } from "fastify-decorators";
+import { resolve } from "path";
+import * as fastify from "fastify";
 
-const app = express();
+const app = fastify();
 
-const api = Router();
-attachControllers(api, [UsersController]);
-
-app.use("/v1/api", api);
+app.register(bootstrap, {
+  directory: resolve(__dirname, `controllers`),
+  mask: /\.controller\./,
+});
 
 http.node.use(app);
